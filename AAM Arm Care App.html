@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AAM Arm Care Manual</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --navy: #0B1F3A;
+    --navy-mid: #122849;
+    --navy-light: #1A3560;
+    --gold: #C8952A;
+    --gold-light: #E0A830;
+    --white: #F5F7FA;
+    --gray: #8A9BB0;
+    --gray-light: #D4DCE8;
+    --text: #E8EDF4;
+    --text-dim: #8A9BB0;
+    --card: #12263F;
+    --card-border: #1E3A5F;
+    --danger: #E05252;
+    --success: #4CAF82;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── LOGIN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0B1F3A 0%, #0D2847 60%, #122849 100%);
+    padding: 2rem;
+  }
+
+  .login-box {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 3rem 2.5rem;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .login-logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .login-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 0.5rem;
+  }
+
+  .login-sub {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-bottom: 2rem;
+  }
+
+  .login-box input[type="password"] {
+    width: 100%;
+    padding: 0.85rem 1rem;
+    background: var(--navy-light);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--white);
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    outline: none;
+    margin-bottom: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .login-box input[type="password"]:focus {
+    border-color: var(--gold);
+  }
+
+  .btn-login {
+    width: 100%;
+    padding: 0.9rem;
+    background: var(--gold);
+    color: var(--navy);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .btn-login:hover { background: var(--gold-light); }
+
+  .login-error {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 0.75rem;
+    display: none;
+  }
+
+  .login-hint {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-top: 1.5rem;
+  }
+
+  /* ── APP SHELL ── */
+  #app { display: none; min-height: 100vh; }
+
+  /* ── HEADER ── */
+  .app-header {
+    background: var(--navy-mid);
+    border-bottom: 2px solid var(--gold);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-brand {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--white);
+    letter-spacing: 0.05em;
+  }
+
+  .header-brand span { color: var(--gold); }
+
+  .btn-logout {
+    background: transparent;
+    border: 1px solid var(--card-border);
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .app-body {
+    display: flex;
+    min-height: calc(100vh - 64px);
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--navy-mid);
+    border-right: 1px solid var(--card-border);
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .sidebar-section-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    padding: 0.5rem 1.5rem 0.25rem;
+    margin-top: 0.75rem;
+  }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    font-size: 0.88rem;
+    color: var(--text-dim);
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .sidebar-item:hover {
+    background: rgba(200,149,42,0.08);
+    color: var(--white);
+  }
+
+  .sidebar-item.active {
+    background: rgba(200,149,42,0.12);
+    color: var(--gold);
+    border-left-color: var(--gold);
+  }
+
+  .sidebar-icon { font-size: 1rem; width: 20px; text-align: center; }
+
+  /* ── MAIN CONTENT ── */
+  .main-content {
+    flex: 1;
+    padding: 2.5rem;
+    max-width: 960px;
+  }
+
+  /* ── SECTION DISPLAY ── */
+  .section-page { display: none; }
+  .section-page.active { display: block; }
+
+  .page-header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .page-eyebrow {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+  }
+
+  .page-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--white);
+    line-height: 1.1;
+  }
+
+  .page-desc {
+    margin-top: 0.5rem;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    max-width: 640px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .card p { font-size: 0.9rem; color: var(--text); margin-bottom: 0.6rem; }
+  .card p:last-child { margin-bottom: 0; }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+  }
+
+  .data-table th {
+    background: var(--navy-light);
+    color: var(--gold);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    border-bottom: 1px solid var(--card-border);
+  }
+
+  .data-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid rgba(30,58,95,0.5);
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:hover td { background: rgba(200,149,42,0.04); }
+
+  /* ── STEP BOXES ── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .step-box {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1.1rem;
+  }
+
+  .step-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .step-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    padding: 0.2rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+  }
+
+  .step-row:last-child { border-bottom: none; }
+  .step-row .dist { color: var(--text-dim); }
+  .step-row .throws { color: var(--white); font-weight: 500; }
+  .step-row.rest { color: var(--gold); font-size: 0.78rem; }
+
+  /* ── WARNING BOX ── */
+  .warning-box {
+    background: rgba(224,82,82,0.1);
+    border: 1px solid rgba(224,82,82,0.3);
+    border-left: 4px solid var(--danger);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.88rem;
+    color: #F0A0A0;
+  }
+
+  .warning-box strong { color: var(--danger); display: block; margin-bottom: 0.4rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .info-box {
+    background: rgba(200,149,42,0.08);
+    border: 1px solid rgba(200,149,42,0.25);
+    border-left: 4px solid var(--gold);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.88rem;
+    color: #D4C08A;
+  }
+
+  .info-box strong { color: var(--gold); display: block; margin-bottom: 0.3rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+  .success-box {
+    background: rgba(76,175,130,0.08);
+    border: 1px solid rgba(76,175,130,0.25);
+    border-left: 4px solid var(--success);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.88rem;
+    color: #9EDFC0;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { list-style: none; }
+  .checklist li {
+    padding: 0.4rem 0;
+    font-size: 0.88rem;
+    display: flex;
+    gap: 0.6rem;
+    color: var(--text);
+  }
+
+  .checklist li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; }
+  .checklist.danger li::before { content: '✗'; color: var(--danger); }
+  .checklist.warn li::before { content: '⚠'; color: var(--gold); }
+
+  /* ── RULE LIST ── */
+  .rule-list { list-style: none; }
+  .rule-list li {
+    padding: 0.5rem 0;
+    font-size: 0.88rem;
+    border-bottom: 1px solid rgba(30,58,95,0.4);
+    color: var(--text);
+    padding-left: 1rem;
+    position: relative;
+  }
+
+  .rule-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 4px;
+    background: var(--gold);
+    border-radius: 50%;
+  }
+
+  /* ── PILL ── */
+  .pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    margin-right: 0.3rem;
+  }
+
+  .pill-gold { background: rgba(200,149,42,0.2); color: var(--gold); }
+  .pill-red { background: rgba(224,82,82,0.2); color: var(--danger); }
+  .pill-green { background: rgba(76,175,130,0.2); color: var(--success); }
+  .pill-gray { background: rgba(138,155,176,0.2); color: var(--gray); }
+
+  /* ── HOME GRID ── */
+  .home-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .home-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.2s;
+    transform-origin: left;
+  }
+
+  .home-card:hover { border-color: var(--gold); transform: translateY(-2px); }
+  .home-card:hover::before { transform: scaleX(1); }
+
+  .home-card-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+
+  .home-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+  }
+
+  .home-card-desc { font-size: 0.8rem; color: var(--text-dim); }
+
+  /* ── FAQ ── */
+  .faq-item {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .faq-q {
+    padding: 1rem 1.25rem;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: background 0.15s;
+  }
+
+  .faq-q:hover { background: rgba(200,149,42,0.06); }
+  .faq-q .arrow { color: var(--gold); font-size: 0.8rem; transition: transform 0.2s; }
+  .faq-item.open .faq-q .arrow { transform: rotate(180deg); }
+
+  .faq-a {
+    display: none;
+    padding: 0 1.25rem 1rem;
+    font-size: 0.87rem;
+    color: var(--text-dim);
+    border-top: 1px solid var(--card-border);
+    padding-top: 0.85rem;
+    line-height: 1.7;
+  }
+
+  .faq-item.open .faq-a { display: block; }
+
+  /* ── EXERCISE TABLE ── */
+  .exercise-row {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(30,58,95,0.5);
+    align-items: start;
+  }
+
+  .exercise-row:last-child { border-bottom: none; }
+  .exercise-name { font-weight: 500; font-size: 0.9rem; color: var(--white); }
+  .exercise-detail { font-size: 0.82rem; color: var(--text-dim); margin-top: 0.2rem; }
+  .exercise-reps { font-family: 'Barlow Condensed', sans-serif; font-size: 0.9rem; font-weight: 700; color: var(--gold); white-space: nowrap; text-align: right; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main-content { padding: 1.5rem; }
+    .steps-grid { grid-template-columns: 1fr 1fr; }
+    .home-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 480px) {
+    .steps-grid { grid-template-columns: 1fr; }
+    .home-grid { grid-template-columns: 1fr; }
+  }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--navy-mid); }
+  ::-webkit-scrollbar-thumb { background: var(--navy-light); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ LOGIN ══════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Advanced Athletic Medicine</div>
+    <div class="login-title">AAM ARM CARE<br>MANUAL</div>
+    <div class="login-sub">Evidence-Based Standards for the Throwing Athlete</div>
+    <input type="password" id="password-input" placeholder="Enter access code" onkeydown="if(event.key==='Enter') tryLogin()">
+    <button class="btn-login" onclick="tryLogin()">ACCESS MANUAL</button>
+    <div class="login-error" id="login-error">Incorrect access code. Try again.</div>
+    <div class="login-hint">Contact your AAM provider for access.</div>
+  </div>
+</div>
+
+<!-- ══════════ APP ══════════ -->
+<div id="app">
+  <header class="app-header">
+    <div class="header-brand">AAM <span>ARM CARE</span></div>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </header>
+
+  <div class="app-body">
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="sidebar-section-label">Overview</div>
+      <div class="sidebar-item active" onclick="showSection('home')"><span class="sidebar-icon">🏠</span> Home</div>
+      <div class="sidebar-item" onclick="showSection('why')"><span class="sidebar-icon">📖</span> Why Arm Care Matters</div>
+      <div class="sidebar-item" onclick="showSection('standards')"><span class="sidebar-icon">⭐</span> AAM Standards</div>
+      <div class="sidebar-item" onclick="showSection('redflags')"><span class="sidebar-icon">🚨</span> Red Flags</div>
+
+      <div class="sidebar-section-label">Daily Routines</div>
+      <div class="sidebar-item" onclick="showSection('foam')"><span class="sidebar-icon">🔵</span> Foam Roll</div>
+      <div class="sidebar-item" onclick="showSection('tspine')"><span class="sidebar-icon">🔄</span> T-Spine Mobility</div>
+      <div class="sidebar-item" onclick="showSection('prethrow')"><span class="sidebar-icon">💪</span> Pre-Throw Bands</div>
+      <div class="sidebar-item" onclick="showSection('postthrow')"><span class="sidebar-icon">🧘</span> Post-Throw Bands</div>
+      <div class="sidebar-item" onclick="showSection('scap')"><span class="sidebar-icon">🦴</span> Scapular Control</div>
+      <div class="sidebar-item" onclick="showSection('2out')"><span class="sidebar-icon">⚾</span> 2-Out Drill</div>
+      <div class="sidebar-item" onclick="showSection('gethot')"><span class="sidebar-icon">🔥</span> Get Hot Routine</div>
+
+      <div class="sidebar-section-label">Return to Throw</div>
+      <div class="sidebar-item" onclick="showSection('rtt')"><span class="sidebar-icon">📈</span> Interval Program</div>
+      <div class="sidebar-item" onclick="showSection('mound')"><span class="sidebar-icon">🏟️</span> Mound Progression</div>
+
+      <div class="sidebar-section-label">Guidelines</div>
+      <div class="sidebar-item" onclick="showSection('pitchcount')"><span class="sidebar-icon">📊</span> Pitch Count Rules</div>
+      <div class="sidebar-item" onclick="showSection('recovery')"><span class="sidebar-icon">😴</span> Recovery Protocols</div>
+      <div class="sidebar-item" onclick="showSection('gethot_game')"><span class="sidebar-icon">🎮</span> Game Day Routines</div>
+      <div class="sidebar-item" onclick="showSection('ankle')"><span class="sidebar-icon">🦵</span> Ankle Strengthening</div>
+      <div class="sidebar-item" onclick="showSection('youth')"><span class="sidebar-icon">👦</span> Youth Arm Care</div>
+
+      <div class="sidebar-section-label">Reference</div>
+      <div class="sidebar-item" onclick="showSection('faq')"><span class="sidebar-icon">❓</span> FAQ</div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="main-content">
+
+      <!-- HOME -->
+      <div class="section-page active" id="page-home">
+        <div class="page-header">
+          <div class="page-eyebrow">Advanced Athletic Medicine</div>
+          <div class="page-title">ARM CARE MANUAL</div>
+          <div class="page-desc">Evidence-based standards for the throwing athlete. Select any section to get started.</div>
+        </div>
+        <div class="info-box">
+          <strong>About This Manual</strong>
+          This manual is provided for educational and training purposes only. It does not constitute medical advice. Athletes experiencing pain or injury should seek evaluation from a qualified healthcare provider before continuing any program.
+        </div>
+        <div class="home-grid">
+          <div class="home-card" onclick="showSection('why')">
+            <div class="home-card-icon">📖</div>
+            <div class="home-card-title">Why Arm Care Matters</div>
+            <div class="home-card-desc">Fatigue, preparation, and long-term development principles.</div>
+          </div>
+          <div class="home-card" onclick="showSection('redflags')">
+            <div class="home-card-icon">🚨</div>
+            <div class="home-card-title">Red Flags</div>
+            <div class="home-card-desc">Know when to stop. Signs that require immediate attention.</div>
+          </div>
+          <div class="home-card" onclick="showSection('prethrow')">
+            <div class="home-card-icon">💪</div>
+            <div class="home-card-title">Pre-Throw Bands</div>
+            <div class="home-card-desc">15-exercise activation routine before every throwing session.</div>
+          </div>
+          <div class="home-card" onclick="showSection('postthrow')">
+            <div class="home-card-icon">🧘</div>
+            <div class="home-card-title">Post-Throw Bands</div>
+            <div class="home-card-desc">Isometric holds to support recovery after throwing.</div>
+          </div>
+          <div class="home-card" onclick="showSection('rtt')">
+            <div class="home-card-icon">📈</div>
+            <div class="home-card-title">Return to Throw</div>
+            <div class="home-card-desc">11-step interval throwing program for safe return after a break.</div>
+          </div>
+          <div class="home-card" onclick="showSection('mound')">
+            <div class="home-card-icon">🏟️</div>
+            <div class="home-card-title">Mound Progression</div>
+            <div class="home-card-desc">10-week pitcher's mound progression — flat ground to full intent.</div>
+          </div>
+          <div class="home-card" onclick="showSection('pitchcount')">
+            <div class="home-card-icon">📊</div>
+            <div class="home-card-title">Pitch Count Rules</div>
+            <div class="home-card-desc">Age-based limits and required rest days by pitch count.</div>
+          </div>
+          <div class="home-card" onclick="showSection('gethot_game')">
+            <div class="home-card-icon">🎮</div>
+            <div class="home-card-title">Game Day Routines</div>
+            <div class="home-card-desc">Get Hot protocols for starters, relievers, position players, and catchers.</div>
+          </div>
+          <div class="home-card" onclick="showSection('youth')">
+            <div class="home-card-icon">👦</div>
+            <div class="home-card-title">Youth Arm Care</div>
+            <div class="home-card-desc">Quick guide for Little League athletes and parents.</div>
+          </div>
+          <div class="home-card" onclick="showSection('faq')">
+            <div class="home-card-icon">❓</div>
+            <div class="home-card-title">FAQ</div>
+            <div class="home-card-desc">Common questions from athletes and parents answered.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- WHY ARM CARE MATTERS -->
+      <div class="section-page" id="page-why">
+        <div class="page-header">
+          <div class="page-eyebrow">Section 1</div>
+          <div class="page-title">WHY ARM CARE MATTERS</div>
+        </div>
+        <div class="card">
+          <div class="card-title">The Throwing Chain</div>
+          <p>Throwing is one of the most complex and physically demanding movements in sport. In efficient throwing, force is generated from the ground and transferred through the hips, trunk, and shoulder before being expressed through the arm.</p>
+          <p>The arm functions primarily as a <strong>stress receiver and force transmitter</strong>, not a primary force generator. When movement quality, strength, or control is lacking elsewhere in the system, the arm is forced to compensate — leading to increased joint stress and a higher likelihood of breakdown.</p>
+          <p style="font-style:italic; color: var(--gold);">Legs → Hips → Core → Shoulder → Arm → Ball</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Fatigue Is a Primary Risk Factor</div>
+          <p>Fatigue is one of the strongest predictors of injury in throwing athletes. As fatigue accumulates:</p>
+          <ul class="checklist danger" style="margin-top:0.5rem;">
+            <li>Movement patterns become less efficient</li>
+            <li>Muscle activation timing is delayed</li>
+            <li>Joint loads increase</li>
+            <li>Recovery between sessions declines</li>
+          </ul>
+          <p style="margin-top:0.75rem;">Many throwing injuries are not caused by a single event, but by repeated exposure to stress once the body's ability to adapt has diminished.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">Preparation Drives Performance</div>
+          <p>Arm care is not a limitation on performance — it is a prerequisite for it. Athletes who consistently prioritize preparation demonstrate:</p>
+          <ul class="checklist" style="margin-top:0.5rem;">
+            <li>Improved throwing efficiency</li>
+            <li>Greater consistency in output</li>
+            <li>Enhanced body awareness and control</li>
+            <li>Increased confidence in physical readiness</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Long-Term Athletic Development</div>
+          <p>Throwing success is built over years, not weeks. Sustainable development requires an approach that respects workload, recovery, and progression. Short-term gains achieved without proper preparation often come at the expense of long-term health.</p>
+          <div class="info-box" style="margin-top:1rem; margin-bottom:0;">
+            <strong>Core Philosophy</strong>
+            The goal is not to eliminate stress, but to ensure the athlete is equipped to tolerate it.
+          </div>
+        </div>
+      </div>
+
+      <!-- STANDARDS -->
+      <div class="section-page" id="page-standards">
+        <div class="page-header">
+          <div class="page-eyebrow">Section 2</div>
+          <div class="page-title">AAM ARM CARE STANDARDS</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Core Standards</div>
+          <ul class="checklist" style="margin-top:0.5rem;">
+            <li>Train intelligently and manage stress to support long-term performance and durability.</li>
+            <li>Arm care is not about doing more — it's about doing the right things, consistently.</li>
+            <li>Small, consistent improvements produce the greatest long-term results.</li>
+            <li>Arm care supports throwing and should enhance training, not compete with it.</li>
+            <li>Ignoring warning signs is not toughness — it increases risk.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Standards in Practice</div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Preparation before intensity</div><div class="exercise-detail">Arm care prepares the body to throw efficiently rather than fatiguing it before high-stress work.</div></div>
+          </div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Stress is managed, not avoided</div><div class="exercise-detail">Throwing stress is necessary for development but must be appropriately dosed and supported.</div></div>
+          </div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Progressions are respected</div><div class="exercise-detail">Intensity and volume advance when capacity improves — not simply because time has passed.</div></div>
+          </div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Quality over quantity</div><div class="exercise-detail">More work is not better work. Intent and execution matter more than volume.</div></div>
+          </div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Feedback guides adjustment</div><div class="exercise-detail">Soreness, fatigue, and movement changes are treated as information — not obstacles to ignore.</div></div>
+          </div>
+          <div class="exercise-row">
+            <div><div class="exercise-name">Consistency builds durability</div><div class="exercise-detail">Small actions performed consistently produce the greatest long-term benefit.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RED FLAGS -->
+      <div class="section-page" id="page-redflags">
+        <div class="page-header">
+          <div class="page-eyebrow">Section 3</div>
+          <div class="page-title">RED FLAGS & ATHLETE RESPONSIBILITIES</div>
+        </div>
+        <div class="warning-box">
+          <strong>Stop Immediately</strong>
+          If you experience any of the following, STOP the program and seek evaluation from an AAM provider or qualified medical professional.
+        </div>
+        <div class="card">
+          <div class="card-title">Pain-Related Red Flags</div>
+          <ul class="checklist danger">
+            <li>Sharp, stabbing, or sudden pain</li>
+            <li>Pain that worsens during or after throwing</li>
+            <li>Pain that does not improve with rest or recovery</li>
+            <li>Pain that alters mechanics or movement patterns</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Neurological Symptoms</div>
+          <ul class="checklist danger">
+            <li>Numbness or tingling in the arm, hand, or fingers</li>
+            <li>Burning sensations</li>
+            <li>Loss of coordination or grip strength</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Range of Motion or Strength Changes</div>
+          <ul class="checklist danger">
+            <li>Sudden or progressive loss of shoulder or elbow range of motion</li>
+            <li>Noticeable weakness not related to normal fatigue</li>
+            <li>Inability to fully straighten or bend the elbow</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Swelling & Structural Concerns</div>
+          <ul class="checklist danger">
+            <li>Visible swelling around the elbow or shoulder</li>
+            <li>Unusual tightness or pressure that does not resolve</li>
+            <li>Audible popping or catching accompanied by pain</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Fatigue That Does Not Resolve</div>
+          <ul class="checklist danger">
+            <li>Persistent arm heaviness</li>
+            <li>Loss of throwing feel or control over multiple sessions</li>
+            <li>Declining performance despite adequate rest</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">The Athlete's Responsibilities</div>
+          <ul class="checklist">
+            <li>Train with awareness and intent</li>
+            <li>Respect fatigue and recovery</li>
+            <li>Perform all movements with control and purpose</li>
+            <li>Communicate symptoms or concerns early</li>
+            <li>Avoid pushing through pain in pursuit of performance</li>
+            <li>Show up consistently and prepared</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- FOAM ROLL -->
+      <div class="section-page" id="page-foam">
+        <div class="page-header">
+          <div class="page-eyebrow">Daily Routine</div>
+          <div class="page-title">FOAM ROLL</div>
+          <div class="page-desc">Complete before mobility and throwing. Pause on tight areas, slow and controlled.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Lower Body</div>
+          <div class="exercise-row"><div><div class="exercise-name">Hamstring</div><div class="exercise-detail">Slow rolls, pause on tight areas. Hook uninvolved side if able.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Calf</div><div class="exercise-detail">Work ankle to knee, hook uninvolved leg for more pressure, avoid fast rolling.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Quad</div><div class="exercise-detail">Roll hip to knee, controlled pressure.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">IT Band</div><div class="exercise-detail">Light pressure, slow movement.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Glute</div><div class="exercise-detail">Cross leg, roll side to side.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Adductor</div><div class="exercise-detail">Gentle pressure, short range.</div></div><div class="exercise-reps">15–30 sec</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Upper Body</div>
+          <div class="exercise-row"><div><div class="exercise-name">Lat</div><div class="exercise-detail">Side-lying, roll arm pit to mid-back.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">T-Spine Extension</div><div class="exercise-detail">Roll mid-back only, support neck.</div></div><div class="exercise-reps">15–30 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Pec Stretch</div><div class="exercise-detail">Roller parallel to the spine, stretching the pec.</div></div><div class="exercise-reps">15–30 sec</div></div>
+        </div>
+      </div>
+
+      <!-- T-SPINE -->
+      <div class="section-page" id="page-tspine">
+        <div class="page-header">
+          <div class="page-eyebrow">Daily Routine</div>
+          <div class="page-title">THORACIC SPINE MOBILITY</div>
+          <div class="page-desc">Complete after foam roll, before throwing.</div>
+        </div>
+        <div class="card">
+          <div class="exercise-row"><div><div class="exercise-name">Cat / Cow</div><div class="exercise-detail">Move slowly through flexion and extension with breathing throughout.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Foam Roll Extension</div><div class="exercise-detail">Extend over the roller, support head, avoid low back. Each level of T-spine.</div></div><div class="exercise-reps">Each level</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Side Lying Open Books</div><div class="exercise-detail">Rotate upper arm open, keep knees stacked.</div></div><div class="exercise-reps">1×10 ea</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Quadruped T-Spine Rotation</div><div class="exercise-detail">Rotate through upper back, hips stay square, reach as far as you can.</div></div><div class="exercise-reps">1×10 ea</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Quadruped Thread the Needle</div><div class="exercise-detail">Rotate through upper back, hips stay square, reach as far as you can.</div></div><div class="exercise-reps">1×10 ea</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Standing T-Spine Rotation</div><div class="exercise-detail">Rotate chest side to side without leaning.</div></div><div class="exercise-reps">1×10 ea</div></div>
+        </div>
+      </div>
+
+      <!-- PRE-THROW BANDS -->
+      <div class="section-page" id="page-prethrow">
+        <div class="page-header">
+          <div class="page-eyebrow">Daily Routine</div>
+          <div class="page-title">PRE-THROW BANDS</div>
+          <div class="page-desc">Complete prior to mound work. Goal: get muscle groups firing and primed. Volume intentionally low — 1×8 each. Use J-Band or similar.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Wrist & Elbow</div>
+          <div class="exercise-row"><div><div class="exercise-name">Wrist Flexion</div><div class="exercise-detail">Neutral hand, palms up, flex the wrist — slow and controlled.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Wrist Extension</div><div class="exercise-detail">Neutral hand, palms down, extend the wrist — slow and controlled.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Bicep Curl</div><div class="exercise-detail">Maintain good posture, bend at the elbow, contracting the bicep.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Tricep Extension</div><div class="exercise-detail">Lock upper arm, extend through the elbow only.</div></div><div class="exercise-reps">1×8</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Shoulder & Scapular</div>
+          <div class="exercise-row"><div><div class="exercise-name">Scaption</div><div class="exercise-detail">Thumbs up, raise arms to 90°, angles just outside of neutral.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Low Row</div><div class="exercise-detail">Pull elbows back, squeeze shoulder blades.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">High Row</div><div class="exercise-detail">Pull elbows high, avoid shrugging.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">"I"</div><div class="exercise-detail">Straight arms, lift with control.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">"Y"</div><div class="exercise-detail">Lift arms at overhead angle, slow movement.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">"T"</div><div class="exercise-detail">Arms out to the side, squeeze between shoulder blades.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Shoulder "A"</div><div class="exercise-detail">Elbow level with shoulder, small controlled motion.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Shoulder Extension</div><div class="exercise-detail">Pull arm back without arching, squeezing shoulder blades.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Shoulder "W" Robber</div><div class="exercise-detail">Pull elbows back, rotate hands outward.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Shoulder Adduction</div><div class="exercise-detail">Pull arm down toward body, control movement.</div></div><div class="exercise-reps">1×8</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Overhead Lat Traction Activation</div><div class="exercise-detail">Half knee, straight back, pull down and rotate.</div></div><div class="exercise-reps">1×8</div></div>
+        </div>
+      </div>
+
+      <!-- POST-THROW BANDS -->
+      <div class="section-page" id="page-postthrow">
+        <div class="page-header">
+          <div class="page-eyebrow">Daily Routine</div>
+          <div class="page-title">POST-THROW BANDS</div>
+          <div class="page-desc">Isometric-based sustained holds. After each rep, relax the contraction fully, then re-engage.</div>
+        </div>
+        <div class="card">
+          <div class="exercise-row"><div><div class="exercise-name">"A" Hold</div><div class="exercise-detail">Arms overhead, hands at the side of your head, hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">External Rotation @ 90/90 Hold</div><div class="exercise-detail">Arms at 90/90, sustained hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">"T" Hold</div><div class="exercise-detail">Arms out to the side, squeeze shoulder blades and hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Shoulder Extension Hold</div><div class="exercise-detail">Straight arms, pull shoulder blades back and hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Bicep Curl Hold @ 90/90</div><div class="exercise-detail">At your side, maintain a bicep curl with the shoulder at 90°.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Wrist Flexion Hold</div><div class="exercise-detail">At your side, arm straight, flex at the wrist and hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Wrist Extension Hold</div><div class="exercise-detail">At your side, arm straight, extend the wrist and hold.</div></div><div class="exercise-reps">1×8 × 8 sec</div></div>
+        </div>
+      </div>
+
+      <!-- SCAPULAR CONTROL -->
+      <div class="section-page" id="page-scap">
+        <div class="page-header">
+          <div class="page-eyebrow">Daily Routine</div>
+          <div class="page-title">SCAPULAR CONTROL</div>
+          <div class="page-desc">Arm care exercises targeting scapular stability and control.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Blackburns</div>
+          <div class="exercise-row"><div><div class="exercise-name">T – Thumbs Up</div><div class="exercise-detail">Prone, thumbs up, set scaps, lift.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">T – Thumbs Neutral</div><div class="exercise-detail">Prone, thumbs neutral, set scaps, lift.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Y – Thumbs Up</div><div class="exercise-detail">Prone, thumbs up, set scaps, lift.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Y – Thumbs Neutral</div><div class="exercise-detail">Prone, thumbs neutral, set scaps, lift.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">External Rotation 90/90</div><div class="exercise-detail">Prone, shoulder/elbow 90/90, thumbs up, set scaps, externally rotate.</div></div><div class="exercise-reps">1×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Prone Shoulder Extension Palms Down</div><div class="exercise-detail">Prone, set scaps, palms down, straight arms, extend through the shoulder.</div></div><div class="exercise-reps">1×10</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Additional Exercises</div>
+          <div class="exercise-row"><div><div class="exercise-name">Kendalls</div><div class="exercise-detail">Balance on stance leg, upright posture, keep arms/elbows/hands on wall, slide all the way up and back down.</div></div><div class="exercise-reps">2×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Banded "Y"</div><div class="exercise-detail">Start hands neutral, set scaps, lift arms into a "Y", keeping straight through the elbows.</div></div><div class="exercise-reps">2×10</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Reverse Bear Crawls</div><div class="exercise-detail">On all 4's, set scaps, walk back, focusing on the scapular motion.</div></div><div class="exercise-reps">2×10 yds</div></div>
+        </div>
+      </div>
+
+      <!-- 2-OUT DRILL -->
+      <div class="section-page" id="page-2out">
+        <div class="page-header">
+          <div class="page-eyebrow">In-Game Routine</div>
+          <div class="page-title">2-OUT DRILL</div>
+          <div class="page-desc">Used by pitchers during a game — when there are 2 outs before returning to the mound. Total time: 30–45 seconds. Originally created by Rafael Escamilla and Kyle Yamashiro.</div>
+        </div>
+        <div class="info-box">
+          <strong>Purpose</strong>
+          This drill has been shown to limit the amount of range of motion loss that comes with overhead throwing during an outing.
+        </div>
+        <div class="card">
+          <div class="exercise-row"><div><div class="exercise-name">Forearm Stretch</div><div class="exercise-detail">Gentle stretch, no aggressive pulling.</div></div><div class="exercise-reps">3×5 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Cross Body Stretch</div><div class="exercise-detail">Relax shoulder, pull across body at the elbow.</div></div><div class="exercise-reps">3×5 sec</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Swims</div><div class="exercise-detail">Smooth arm circles through full range.</div></div><div class="exercise-reps">1×5</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Field Goals</div><div class="exercise-detail">Elbows at 90°, palms neutral, externally rotate at the shoulder, then press up.</div></div><div class="exercise-reps">1×5</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Hugs</div><div class="exercise-detail">Wrap arms around chest, open wide.</div></div><div class="exercise-reps">1×5</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Arm Circles (Small & Large)</div><div class="exercise-detail">Controlled speed, full motion. Small and large, clockwise and counterclockwise.</div></div><div class="exercise-reps">1×5 ea way</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Bent Over Trunk Rotation</div><div class="exercise-detail">Rotate chest side to side, stay hinged.</div></div><div class="exercise-reps">1×5 ea</div></div>
+        </div>
+        <div class="card" style="font-size:0.8rem; color: var(--text-dim);">
+          <strong style="color:var(--gold); display:block; margin-bottom:0.3rem;">Reference</strong>
+          Escamilla RF, Yamashiro K, et al. Effects of a Short-Duration Stretching Drill After Pitching on Elbow and Shoulder Range of Motion in Professional Baseball Pitchers. <em>Am J Sports Med.</em> 2017;45(3):692-700.
+        </div>
+      </div>
+
+      <!-- GET HOT ROUTINE -->
+      <div class="section-page" id="page-gethot">
+        <div class="page-header">
+          <div class="page-eyebrow">Pre-Throwing Routine</div>
+          <div class="page-title">GET HOT ROUTINE</div>
+          <div class="page-desc">Dynamic warm-up and arm ramp — complete before any competitive throwing.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Dynamic Activation</div>
+          <div class="exercise-row"><div><div class="exercise-name">Deep Breath</div><div class="exercise-detail">4 second inhale, 4 second hold, 8 second exhale.</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Scissor Jumps</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Side to Side Jumps</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Lateral Shuffle and Stick</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Reverse Lunge with Rotation</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">A Skips</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Hip Swings</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Bent Over Trunk Rotation</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Banded External Rotation</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Banded Low Row</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Scap Push Ups</div></div><div class="exercise-reps">—</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Arm Ramp Phase</div>
+          <div class="exercise-row"><div><div class="exercise-name">Light Plyo Throw or Wrist Flick</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Short Catch</div><div class="exercise-detail">Staying at 30–45 feet, at 60–70% intent.</div></div><div class="exercise-reps">6–8 throws</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Reverse Throws</div></div><div class="exercise-reps">1×4</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Decel Throws</div></div><div class="exercise-reps">1×4</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Mound Transition</div>
+          <ul class="rule-list">
+            <li>3 Fastballs @ 70%</li>
+            <li>2 Fastballs @ 85%</li>
+            <li>1 Fastball @ Game Intent</li>
+            <li>1–2 Secondary pitches if time allows</li>
+          </ul>
+        </div>
+        <div class="warning-box">
+          <strong>Key Rules</strong>
+          Do not throw just to throw. No full bullpens to "get loose." Do not get stuck chasing velo in the pen. Stop once you're hot!
+        </div>
+      </div>
+
+      <!-- RETURN TO THROW -->
+      <div class="section-page" id="page-rtt">
+        <div class="page-header">
+          <div class="page-eyebrow">Section 9</div>
+          <div class="page-title">INTERVAL THROWING PROGRAM</div>
+          <div class="page-desc">Gradual, structured return to throwing after a significant break. For high school–aged athletes and older. Typically 6–8 weeks. Throw every other day.</div>
+        </div>
+        <div class="warning-box">
+          <strong>Do Not Advance If Any Are Present</strong>
+          Pain during/after throwing • Soreness beyond 24–36 hrs • Mechanical breakdown • Declining arm speed • Incomplete recovery between days. <strong>Repeating a stage is always safer than rushing forward.</strong>
+        </div>
+        <div class="info-box">
+          <strong>Philosophy</strong>
+          Volume is progressed first to build tissue tolerance. Intent is increased only after recovery is demonstrated. "Feeling good" does not mean the arm is ready to advance.
+        </div>
+
+        <h3 style="font-family: 'Barlow Condensed', sans-serif; font-size:1.1rem; color: var(--gold); margin-bottom:1rem; letter-spacing:0.05em;">STEPS 1–11 — INTERVAL THROWING</h3>
+        <div class="steps-grid">
+          <!-- Step 1 -->
+          <div class="step-box">
+            <div class="step-label">Step 1</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+          </div>
+          <!-- Step 2 -->
+          <div class="step-box">
+            <div class="step-label">Step 2</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+          </div>
+          <!-- Step 3 -->
+          <div class="step-box">
+            <div class="step-label">Step 3</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">20 Throws</span></div>
+          </div>
+          <!-- Step 4 -->
+          <div class="step-box">
+            <div class="step-label">Step 4</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">20 Throws</span></div>
+          </div>
+          <!-- Step 5 -->
+          <div class="step-box">
+            <div class="step-label">Step 5</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row"><span class="dist">75'</span><span class="throws">5–10 Throws</span></div>
+          </div>
+          <!-- Step 6 -->
+          <div class="step-box">
+            <div class="step-label">Step 6</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row rest"><span>Rest 3–5 min</span></div>
+            <div class="step-row"><span class="dist">75'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">75'</span><span class="throws">5–10 Throws</span></div>
+          </div>
+          <!-- Step 7 -->
+          <div class="step-box">
+            <div class="step-label">Step 7</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row rest"><span>Rest 3–5 min</span></div>
+            <div class="step-row"><span class="dist">75'</span><span class="throws">20 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">75'</span><span class="throws">10 Throws</span></div>
+          </div>
+          <!-- Step 8 -->
+          <div class="step-box">
+            <div class="step-label">Step 8</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">15 Throws</span></div>
+          </div>
+          <!-- Step 9 -->
+          <div class="step-box">
+            <div class="step-label">Step 9</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5–10 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">15 Throws</span></div>
+          </div>
+          <!-- Step 10 -->
+          <div class="step-box">
+            <div class="step-label">Step 10</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">120'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">120'</span><span class="throws">15 Throws</span></div>
+          </div>
+          <!-- Step 11 -->
+          <div class="step-box">
+            <div class="step-label">Step 11</div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">120'</span><span class="throws">15 Throws</span></div>
+            <div class="step-row rest"><span>Rest 5 min</span></div>
+            <div class="step-row"><span class="dist">45'</span><span class="throws">5 Throws</span></div>
+            <div class="step-row"><span class="dist">60'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">90'</span><span class="throws">10 Throws</span></div>
+            <div class="step-row"><span class="dist">120'</span><span class="throws">15 Throws</span></div>
+          </div>
+        </div>
+
+        <h3 style="font-family: 'Barlow Condensed', sans-serif; font-size:1.1rem; color: var(--gold); margin:1.5rem 0 1rem; letter-spacing:0.05em;">STEPS 12–14 — POSITIONAL PLAYERS</h3>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Distance</th><th>Step 12</th><th>Step 13</th><th>Step 14</th></tr></thead>
+            <tbody>
+              <tr><td>45'</td><td>5–10 Throws</td><td>5–10 Throws</td><td>5–10 Throws</td></tr>
+              <tr><td>60'</td><td>5–10 Throws</td><td>5–10 Throws</td><td>5–10 Throws</td></tr>
+              <tr><td>90'</td><td>5–10 Throws</td><td>5–10 Throws</td><td>5–10 Throws</td></tr>
+              <tr><td>105'</td><td>10 Throws</td><td>10 Throws</td><td>10 Throws</td></tr>
+              <tr><td>120'</td><td>15 Throws</td><td>15 Throws</td><td>15 Throws</td></tr>
+              <tr><td>135'</td><td>10 Throws</td><td>—</td><td>—</td></tr>
+              <tr><td>Position Based</td><td>—</td><td>20 Throws</td><td>20–30 Throws</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MOUND PROGRESSION -->
+      <div class="section-page" id="page-mound">
+        <div class="page-header">
+          <div class="page-eyebrow">Pitcher's Program</div>
+          <div class="page-title">MOUND PROGRESSION</div>
+          <div class="page-desc">10-week progression from flat ground to full-intent bullpen. Complete after finishing the interval throwing program.</div>
+        </div>
+        <div class="info-box">
+          <strong>Intent Note</strong>
+          Intent refers to effort level, not velocity. Velocity should never be chased during this program. Use of a radar gun is recommended but not required.
+        </div>
+        <div class="card">
+          <table class="data-table">
+            <thead><tr><th>Week</th><th>Activity</th><th>Volume</th><th>Intent</th><th>Goal</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pill pill-gray">1</span></td><td>Flat Ground</td><td>20</td><td>50%</td><td>Reintroduce throwing mechanics, rhythm, and basic arm tolerance.</td></tr>
+              <tr><td><span class="pill pill-gray">2</span></td><td>Flat Ground</td><td>20–25</td><td>50–70%</td><td>Build consistency and repeatability while gradually increasing intent.</td></tr>
+              <tr><td><span class="pill pill-gray">3</span></td><td>Bullpen</td><td>15</td><td>50%</td><td>Restore mound familiarity at low intent.</td></tr>
+              <tr><td><span class="pill pill-gray">4</span></td><td>Bullpen</td><td>30</td><td>50%</td><td>Increase exposure to mound volume without increasing intensity.</td></tr>
+              <tr><td><span class="pill pill-gray">5</span></td><td>Bullpen</td><td>45</td><td>50–70%</td><td>Introduce controlled intent while maintaining clean throwing mechanics.</td></tr>
+              <tr><td><span class="pill pill-gray">6</span></td><td>Bullpen</td><td>60</td><td>70%</td><td>Increase mound intent while preserving arm elasticity and recovery.</td></tr>
+              <tr><td><span class="pill pill-gold">7</span></td><td>Bullpen</td><td>20</td><td>100%</td><td>First exposure to full intent at intentionally low volume.</td></tr>
+              <tr><td><span class="pill pill-gold">8</span></td><td>Bullpen</td><td>30</td><td>100%</td><td>Prepare CNS for sustained full-intent throwing.</td></tr>
+              <tr><td><span class="pill pill-gold">9</span></td><td>Bullpen</td><td>40</td><td>100%</td><td>Transition to competitive throwing.</td></tr>
+              <tr><td><span class="pill pill-gold">10</span></td><td>Bullpen</td><td>50</td><td>100%</td><td>Continue to build volume to withstand normal workloads.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="warning-box">
+          <strong>Progression Rules</strong>
+          Bullpen days are considered high-stress days. Soreness lasting longer than 24–36 hours, pain during throwing, or mechanical breakdown means do NOT advance. Repeating a week is always safer than rushing.
+        </div>
+      </div>
+
+      <!-- PITCH COUNT -->
+      <div class="section-page" id="page-pitchcount">
+        <div class="page-header">
+          <div class="page-eyebrow">Guidelines</div>
+          <div class="page-title">PITCH COUNT & WORKLOAD</div>
+          <div class="page-desc">Evidence-based limits drawn from ASMI and the PitchSmart program (MLB/USA Baseball).</div>
+        </div>
+        <div class="info-box">
+          <strong>Important Note</strong>
+          These are minimums, not targets. An athlete who has thrown 75 pitches may still need more than 4 days of rest based on fatigue, mechanics, or health history. Use pitch count as a floor, not a ceiling.
+        </div>
+        <div class="card">
+          <div class="card-title">Pitch Count Limits by Age — Single Game</div>
+          <table class="data-table">
+            <thead><tr><th>Age</th><th>Max Pitches/Day</th><th>Recommended</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>7–8</td><td>50</td><td>35–40</td><td>Motor pattern development priority</td></tr>
+              <tr><td>9–10</td><td>75</td><td>50–60</td><td>First exposure to velocity training; watch mechanics</td></tr>
+              <tr><td>11–12</td><td>85</td><td>60–70</td><td>Growth plate vulnerability; strict limits recommended</td></tr>
+              <tr><td>13–14</td><td>95</td><td>70–80</td><td>Elbow growth plate most vulnerable; watch for pain</td></tr>
+              <tr><td>15–16</td><td>95</td><td>75–85</td><td>UCL risk increases; begin formal arm care program</td></tr>
+              <tr><td>17–18</td><td>105</td><td>80–90</td><td>Near skeletal maturity; still monitor closely</td></tr>
+              <tr><td>19+</td><td>No formal limit</td><td>85–100</td><td>Fatigue-based limits apply</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Required Rest Days by Pitch Count</div>
+          <table class="data-table">
+            <thead><tr><th>Pitches Thrown</th><th>Required Rest</th><th>AAM Recommendation</th></tr></thead>
+            <tbody>
+              <tr><td>1–20</td><td>0 days</td><td>1 day minimum</td></tr>
+              <tr><td>21–35</td><td>1 day</td><td>1–2 days</td></tr>
+              <tr><td>36–50</td><td>2 days</td><td>2–3 days</td></tr>
+              <tr><td>51–65</td><td>3 days</td><td>3–4 days</td></tr>
+              <tr><td>66–80</td><td>4 days</td><td>4–5 days</td></tr>
+              <tr><td>81–95</td><td>5 days</td><td>5–6 days</td></tr>
+              <tr><td>96–105 (17–18 only)</td><td>6 days</td><td>6–7 days</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Weekly Workload Monitoring</div>
+          <table class="data-table">
+            <thead><tr><th>Metric</th><th>Red Flag Threshold</th></tr></thead>
+            <tbody>
+              <tr><td>Weekly pitch total</td><td>&gt;120 pitches in 7-day window (youth)</td></tr>
+              <tr><td>Consecutive high-effort days</td><td>3+ days without full rest</td></tr>
+              <tr><td>Arm fatigue rating</td><td>≥6/10 on two consecutive outings</td></tr>
+              <tr><td>Velocity drop</td><td>&gt;3 mph drop from baseline</td></tr>
+              <tr><td>Recovery quality</td><td>Soreness &gt;36 hours post-outing</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- RECOVERY -->
+      <div class="section-page" id="page-recovery">
+        <div class="page-header">
+          <div class="page-eyebrow">Guidelines</div>
+          <div class="page-title">RECOVERY PROTOCOLS</div>
+          <div class="page-desc">Recovery is not passive — it is an active process that begins the moment a throwing session ends.</div>
+        </div>
+        <div class="info-box">
+          <strong>Most Important Recovery Tool</strong>
+          The most underrated and consistently effective recovery tools are also the simplest: sleep, hydration, and nutrition. No modality compensates for chronic sleep deprivation or poor fueling.
+        </div>
+        <div class="card">
+          <div class="card-title">Ice vs. Heat</div>
+          <table class="data-table">
+            <thead><tr><th>Modality</th><th>When to Use</th><th>Duration</th><th>Avoid When</th></tr></thead>
+            <tbody>
+              <tr><td>Ice</td><td>Immediately post-throwing (within 30 min)</td><td>10–15 min</td><td>Before throwing — reduces proprioception</td></tr>
+              <tr><td>Heat</td><td>Pre-throwing, day after soreness</td><td>10–15 min</td><td>Immediately post-throwing</td></tr>
+              <tr><td>Contrast</td><td>2+ days post-outing for residual soreness</td><td>10 min each × 2</td><td>Acute injury / &lt;24 hrs post-outing</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Sleep by Age Group</div>
+          <table class="data-table">
+            <thead><tr><th>Age</th><th>Recommended</th><th>Minimum</th></tr></thead>
+            <tbody>
+              <tr><td>13–17</td><td>9–10 hours</td><td>8 hours</td></tr>
+              <tr><td>18–22</td><td>8–9 hours</td><td>7 hours</td></tr>
+              <tr><td>22+</td><td>7–9 hours</td><td>7 hours</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Nutrition Timing</div>
+          <table class="data-table">
+            <thead><tr><th>Timing</th><th>What to Consume</th></tr></thead>
+            <tbody>
+              <tr><td>2–3 hrs before</td><td>Balanced meal: carbs, protein, low fat</td></tr>
+              <tr><td>Within 30 min post-throw</td><td>20–30g protein + simple carbs</td></tr>
+              <tr><td>Within 2 hours</td><td>Complete meal: protein, complex carbs, vegetables</td></tr>
+              <tr><td>Throughout day</td><td>Half bodyweight (lbs) in oz of water</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Evidence-Based Recovery Modalities</div>
+          <table class="data-table">
+            <thead><tr><th>Modality</th><th>Evidence</th><th>Notes</th></tr></thead>
+            <tbody>
+              <tr><td>Sleep</td><td><span class="pill pill-green">★★★★★</span></td><td>Non-negotiable foundation</td></tr>
+              <tr><td>Hydration</td><td><span class="pill pill-green">★★★★★</span></td><td>&gt;2% dehydration impairs recovery</td></tr>
+              <tr><td>Post-throw nutrition</td><td><span class="pill pill-green">★★★★☆</span></td><td>20–30g protein within 30 min</td></tr>
+              <tr><td>Light active recovery</td><td><span class="pill pill-green">★★★★☆</span></td><td>Walking, bike, swimming</td></tr>
+              <tr><td>Stretching (post-throw)</td><td><span class="pill pill-green">★★★★☆</span></td><td>Critical for maintaining ROM</td></tr>
+              <tr><td>Cold water immersion</td><td><span class="pill pill-gold">★★★☆☆</span></td><td>10–15 min; may blunt adaptation if daily</td></tr>
+              <tr><td>BFR — low load</td><td><span class="pill pill-gold">★★★☆☆</span></td><td>Do not use with load</td></tr>
+              <tr><td>Massage / foam roll</td><td><span class="pill pill-gold">★★★☆☆</span></td><td>Promotes recovery perception</td></tr>
+              <tr><td>Ice baths</td><td><span class="pill pill-gray">★★☆☆☆</span></td><td>Use situationally, not chronically</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- GAME DAY ROUTINES -->
+      <div class="section-page" id="page-gethot_game">
+        <div class="page-header">
+          <div class="page-eyebrow">Game Day</div>
+          <div class="page-title">GET HOT ROUTINES</div>
+          <div class="page-desc">Position-specific warm-up protocols to reach competitive readiness in the fewest throws. The #1 mistake: throwing too much before competing.</div>
+        </div>
+        <div class="card">
+          <div class="card-title">Starting Pitcher</div>
+          <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:0.75rem;">Total pre-game pitches should not exceed 30–35.</p>
+          <table class="data-table">
+            <thead><tr><th>Step</th><th>Activity</th><th>Volume / Distance</th><th>Intent</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Dynamic Warm-Up</td><td>Full routine</td><td>—</td></tr>
+              <tr><td>2</td><td>J-Band Pre-Throw</td><td>1×8 each</td><td>—</td></tr>
+              <tr><td>3</td><td>Flat ground — easy toss</td><td>20–25 throws @ 45–60'</td><td>40–50%</td></tr>
+              <tr><td>4</td><td>Flat ground — building</td><td>10–15 throws @ 60–90'</td><td>60–70%</td></tr>
+              <tr><td>5</td><td>Flat ground — crow hop</td><td>5–8 throws @ 90'</td><td>75–80%</td></tr>
+              <tr><td>6</td><td>Mound — fastball only</td><td>8–10 pitches</td><td>80–85%</td></tr>
+              <tr><td>7</td><td>Mound — full repertoire</td><td>10–12 pitches</td><td>85–90%</td></tr>
+              <tr><td>8</td><td>Rest / stay warm</td><td>Until game time</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Relief Pitcher</div>
+          <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:0.75rem;">Designed for speed and efficiency. If a reliever sits back down, the second warm-up should be 6–8 pitches at full effort only.</p>
+          <table class="data-table">
+            <thead><tr><th>Step</th><th>Activity</th><th>Volume</th><th>Intent</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Bands (abbreviated)</td><td>8 reps key exercises</td><td>—</td></tr>
+              <tr><td>2</td><td>Easy flat ground</td><td>8–10 throws @ 45'</td><td>40–50%</td></tr>
+              <tr><td>3</td><td>Building toss</td><td>8–10 throws @ 60–75'</td><td>65–75%</td></tr>
+              <tr><td>4</td><td>Mound — fastball</td><td>6–8 pitches</td><td>85–90%</td></tr>
+              <tr><td>5</td><td>Mound — full repertoire</td><td>4–6 pitches</td><td>90–95%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Position Player</div>
+          <table class="data-table">
+            <thead><tr><th>Step</th><th>Activity</th><th>Volume</th><th>Intent</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Dynamic Warm-Up</td><td>Full routine</td><td>—</td></tr>
+              <tr><td>2</td><td>Abbreviated J-Band</td><td>5–6 key exercises × 8 reps</td><td>—</td></tr>
+              <tr><td>3</td><td>Catch — easy</td><td>10–12 throws @ 45'</td><td>50%</td></tr>
+              <tr><td>4</td><td>Catch — building</td><td>8–10 throws @ 60–90'</td><td>65–75%</td></tr>
+              <tr><td>5</td><td>Position-specific throws</td><td>5–8 throws</td><td>80–90%</td></tr>
+              <tr><td>6</td><td>Full effort rep</td><td>2–3 throws</td><td>90–95%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="card">
+          <div class="card-title">Catcher</div>
+          <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:0.75rem;">Catchers should complete the full post-throw band routine after every game and practice — not just when sore.</p>
+          <table class="data-table">
+            <thead><tr><th>Step</th><th>Activity</th><th>Volume</th><th>Intent</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>Full dynamic warm-up</td><td>Complete</td><td>—</td></tr>
+              <tr><td>2</td><td>Full J-Band series</td><td>Pre-throw complete</td><td>—</td></tr>
+              <tr><td>3</td><td>Flat ground easy</td><td>10–12 @ 45'</td><td>40–50%</td></tr>
+              <tr><td>4</td><td>Flat ground building</td><td>8–10 @ 60–75'</td><td>65–70%</td></tr>
+              <tr><td>5</td><td>Crouch throws</td><td>5–6 throws</td><td>75–80%</td></tr>
+              <tr><td>6</td><td>Full effort throw-downs</td><td>3–5 throws</td><td>90–95%</td></tr>
+              <tr><td>7</td><td>Pop time check</td><td>1–2 throws</td><td>100%</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ANKLE -->
+      <div class="section-page" id="page-ankle">
+        <div class="page-header">
+          <div class="page-eyebrow">Supplemental Program</div>
+          <div class="page-title">ANKLE STRENGTHENING</div>
+        </div>
+        <div class="card">
+          <div class="exercise-row"><div><div class="exercise-name">Slant Board – Both Ways</div></div><div class="exercise-reps">3×30 sec ea</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Toe Grabs / Marble Pick Ups</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Towel Curls</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Towel Curls – Inversion / Eversion</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Single Leg Calf Raise</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">4-Way Ankle – Dorsiflexion</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">4-Way Ankle – Eversion</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">4-Way Ankle – Inversion</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">4-Way Ankle – Plantar Flexion</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Single Leg Balance</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Heel Walk</div></div><div class="exercise-reps">—</div></div>
+          <div class="exercise-row"><div><div class="exercise-name">Toe Walk</div></div><div class="exercise-reps">—</div></div>
+        </div>
+      </div>
+
+      <!-- YOUTH ARM CARE -->
+      <div class="section-page" id="page-youth">
+        <div class="page-header">
+          <div class="page-eyebrow">Youth Guide</div>
+          <div class="page-title">YOUTH ARM CARE</div>
+          <div class="page-desc">For Little League athletes and parents.</div>
+        </div>
+        <div class="info-box">
+          <strong>AAM Philosophy for Youth</strong>
+          We Train to Throw — Not Throw to Train. A strong arm starts with a strong body.
+        </div>
+        <div class="card">
+          <div class="card-title">Our 5 Youth Arm Care Rules</div>
+          <div class="exercise-row"><div><div class="exercise-name">1. Pain is NOT normal</div><div class="exercise-detail">Soreness after activity can happen. Pain while throwing is different. If your child says their elbow hurts, arm feels dead, or it hurts when they throw — stop throwing immediately.</div></div></div>
+          <div class="exercise-row"><div><div class="exercise-name">2. Fatigue changes everything</div><div class="exercise-detail">Tired athletes move differently. When mechanics break down, injury risk goes up. Signs: throwing slower, missing targets, dropping elbow, arm feels heavy.</div></div></div>
+          <div class="exercise-row"><div><div class="exercise-name">3. More throwing is NOT better</div><div class="exercise-detail">Kids do not improve by endlessly throwing. Smart training beats extra volume. Quality over quantity.</div></div></div>
+          <div class="exercise-row"><div><div class="exercise-name">4. Recovery is part of training</div><div class="exercise-detail">Drink water, get sleep, eat protein + balanced meals, take rest days. Recovery helps the arm rebuild.</div></div></div>
+          <div class="exercise-row"><div><div class="exercise-name">5. Speak up early</div><div class="exercise-detail">Small issues become big problems when ignored. Early evaluation = faster return + fewer missed games.</div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">When to Stop Throwing Immediately</div>
+          <ul class="checklist danger">
+            <li>Sharp pain</li>
+            <li>Tingling or numbness</li>
+            <li>Sudden loss of velocity</li>
+            <li>Loss of control</li>
+            <li>"Dead arm" feeling</li>
+            <li>Swelling</li>
+            <li>Pain that lasts after rest</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">Simple Game Day Checklist</div>
+          <ul class="checklist">
+            <li>Did I sleep well?</li>
+            <li>Did I eat?</li>
+            <li>Did I warm up?</li>
+            <li>Does my arm feel normal?</li>
+          </ul>
+          <div class="warning-box" style="margin-top:1rem; margin-bottom:0;">
+            <strong>If any answer is NO</strong>
+            Talk to an adult before throwing.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">Parents: Your Role</div>
+          <ul class="checklist">
+            <li>Help your athlete listen to their body</li>
+            <li>Be honest about pain</li>
+            <li>Respect rest days</li>
+            <li>Avoid "playing through it"</li>
+            <li>Communicate with coaches/providers</li>
+          </ul>
+          <p style="margin-top:0.75rem; font-size:0.85rem; color:var(--text-dim);">The goal is long-term development — not just this weekend's game.</p>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="section-page" id="page-faq">
+        <div class="page-header">
+          <div class="page-eyebrow">Reference</div>
+          <div class="page-title">FREQUENTLY ASKED QUESTIONS</div>
+          <div class="page-desc">Common questions from athletes and parents.</div>
+        </div>
+
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Why can't my athlete throw every day? <span class="arrow">▼</span></div>
+          <div class="faq-a">Throwing places repetitive stress on the shoulder and elbow. After a throwing session, the tissues in the arm — tendons, ligaments, muscles, and cartilage — undergo microtrauma that requires time to repair. When throwing occurs before this repair is complete, stress accumulates faster than the body can adapt. Rest days are not wasted days — they are when the adaptation actually happens.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">My athlete says the arm feels fine — why limit pitch count? <span class="arrow">▼</span></div>
+          <div class="faq-a">Feeling fine is not the same as being recovered. Many arm injuries — including UCL tears and stress reactions — develop gradually over weeks or months before any pain appears. By the time pain is present, significant damage may already have occurred. Pitch count limits exist because the research is clear: athletes who exceed them have dramatically higher injury rates, regardless of how they feel.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">When is my athlete ready to pitch again after taking time off? <span class="arrow">▼</span></div>
+          <div class="faq-a">Return to pitching after a layoff requires a structured build-up program — not just a few days of catch. For a standard offseason shutdown, athletes typically need 6–8 weeks of progressive throwing before they are ready to pitch competitively. Following an injury, that timeline depends on the nature and severity of the injury and requires medical clearance.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What does normal arm soreness look like after pitching? <span class="arrow">▼</span></div>
+          <div class="faq-a">Mild muscle soreness that peaks at 24 hours and resolves by 36–48 hours is generally normal. What is NOT normal: sharp or stabbing pain during throwing, soreness that gets progressively worse after each outing, soreness in the joint rather than the muscles, pain that requires extended warm-ups to resolve, or numbness/tingling in the arm or hand.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Is year-round baseball a problem? <span class="arrow">▼</span></div>
+          <div class="faq-a">Yes — when it eliminates the opportunity for structured rest and recovery. Athletes who throw for 10 or more months per year without a meaningful break have significantly higher rates of elbow and shoulder injury. The issue is not playing baseball year-round — it is throwing year-round without periodized rest. A structured shutdown of 4–8 weeks followed by a proper build-up dramatically reduces cumulative stress.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Should my athlete play other sports? <span class="arrow">▼</span></div>
+          <div class="faq-a">Yes — especially in adolescence. Multi-sport participation through high school has been associated with lower overuse injury rates, higher levels of athletic development, and longer athletic careers. Sport specialization before age 14 is consistently linked to higher injury risk and earlier burnout.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Are weighted balls safe for my athlete? <span class="arrow">▼</span></div>
+          <div class="faq-a">Weighted ball training carries meaningful injury risk, particularly for younger athletes and those with any history of arm injury. AAM's position is that weighted balls may be appropriate for athletes 16 and older who are pain-free, have adequate arm strength and mobility, and are supervised by a qualified professional. They are not appropriate for athletes under 16, those with active symptoms, or those without a proper foundation of arm care and strength.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What is the difference between arm soreness and arm pain? <span class="arrow">▼</span></div>
+          <div class="faq-a">Soreness is a diffuse, muscular ache that typically develops 12–24 hours after activity and is not present during throwing. Pain is present during activity, is often focal (in a specific spot), and may be sharp, stabbing, or burning. Soreness is a normal training response. Pain is a signal that something is wrong. If it hurts during throwing — stop, do not push through, and seek evaluation.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">Should my athlete ice after every outing? <span class="arrow">▼</span></div>
+          <div class="faq-a">Icing after throwing is common and effective for managing soreness and discomfort. However, it should not be applied for more than 15 minutes and should not be used directly before throwing, as it can reduce proprioception and tissue extensibility. Post-throw stretching and band work are at least as important as icing for long-term arm health.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What should I do if my athlete complains of elbow or shoulder pain? <span class="arrow">▼</span></div>
+          <div class="faq-a">Stop throwing immediately. Do not have the athlete push through pain in hopes it resolves. Schedule an evaluation with a sports medicine physician or orthopedic specialist — not after the season, now. Early evaluation of throwing-related pain dramatically improves outcomes and reduces the likelihood of a more serious injury.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q">What is GIRD and why does it matter? <span class="arrow">▼</span></div>
+          <div class="faq-a">GIRD stands for Glenohumeral Internal Rotation Deficit — a loss of internal rotation range of motion in the throwing shoulder compared to the non-throwing side. A mild degree of GIRD is normal in throwing athletes. However, when GIRD exceeds 18–20°, it is associated with increased shoulder and elbow injury risk. GIRD is addressed through posterior shoulder stretching (sleeper stretch, cross-body stretch).</div>
+        </div>
+
+        <div class="card" style="margin-top:1.5rem; font-size:0.8rem; color:var(--text-dim);">
+          <strong style="color:var(--gold); display:block; margin-bottom:0.5rem;">LEGAL DISCLAIMER</strong>
+          This manual is provided for educational and training purposes only and does not constitute medical advice. Athletes experiencing pain, injury, or symptoms should seek evaluation from a qualified healthcare or sports medicine professional. © 2025 Advanced Athletic Medicine. All rights reserved.
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+  // ── PASSWORDS ──
+  // Change these to whatever you want!
+  const PASSWORDS = ['AAMarmcare2025', 'athlete2025', 'coach2025'];
+
+  function tryLogin() {
+    const input = document.getElementById('password-input').value.trim();
+    const error = document.getElementById('login-error');
+    if (PASSWORDS.includes(input)) {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      sessionStorage.setItem('aam_auth', '1');
+    } else {
+      error.style.display = 'block';
+      document.getElementById('password-input').value = '';
+      document.getElementById('password-input').focus();
+    }
+  }
+
+  function logout() {
+    sessionStorage.removeItem('aam_auth');
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('password-input').value = '';
+    document.getElementById('login-error').style.display = 'none';
+  }
+
+  // Check session
+  if (sessionStorage.getItem('aam_auth') === '1') {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+  }
+
+  // ── NAVIGATION ──
+  function showSection(id) {
+    document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    const items = document.querySelectorAll('.sidebar-item');
+    items.forEach(item => {
+      if (item.getAttribute('onclick').includes("'" + id + "'")) item.classList.add('active');
+    });
+    document.querySelector('.main-content').scrollTop = 0;
+    window.scrollTo(0, 0);
+  }
+
+  // ── FAQ ──
+  function toggleFaq(el) {
+    el.classList.toggle('open');
+  }
+</script>
+</body>
+</html>
