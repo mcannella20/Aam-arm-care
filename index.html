@@ -452,7 +452,10 @@ body { font-family: Arial, sans-serif; background: #0F1E35; color: #fff; }
 .pb-item{background:#fff;border:1px solid #E8E4DC;border-radius:4px;padding:9px 12px;cursor:grab}
 .pb-item.drag-over{border-color:#C9A84C;background:#FDFBF4}
 .pb-item-hdr{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-.pb-drag{color:#C0C0C0;font-size:15px;cursor:grab;flex-shrink:0}
+.pb-move-col{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.pb-move-btn{width:22px;height:18px;border:1px solid #E8E4DC;background:#fff;color:#4A4A52;font-size:9px;line-height:1;border-radius:2px;cursor:pointer;padding:0}
+.pb-move-btn:disabled{opacity:0.3;cursor:default}
+.pb-move-btn:not(:disabled):active{background:#FDFBF4;border-color:#C9A84C}
 .pb-thumb{width:38px;height:32px;background:#1A2F4E;border-radius:2px;flex-shrink:0;overflow:hidden}
 .pb-thumb img{width:100%;height:100%;object-fit:cover;object-position:center 60%}
 .pb-name{font-size:13px;font-weight:700;color:#0F1E35;flex:1}
@@ -3916,13 +3919,15 @@ function renderProgram(){
   if(!pbProgram.length){el.innerHTML='';if(msg)msg.style.display='block';return;}
   if(msg)msg.style.display='none';
   el.innerHTML='';
-  pbProgram.forEach(function(item){
+  pbProgram.forEach(function(item,idx){
     var d=document.createElement('div');
     d.className='pb-item';
-    d.draggable=true;
     d.dataset.uid=item.uid;
     d.innerHTML='<div class="pb-item-hdr">'
-      +'<div class="pb-drag">&#9776;</div>'
+      +'<div class="pb-move-col">'
+      +'<button class="pb-move-btn" '+(idx===0?'disabled':'')+' onclick="moveProgItem('+item.uid+',-1)" aria-label="Move up">&#9650;</button>'
+      +'<button class="pb-move-btn" '+(idx===pbProgram.length-1?'disabled':'')+' onclick="moveProgItem('+item.uid+',1)" aria-label="Move down">&#9660;</button>'
+      +'</div>'
       +'<div class="pb-thumb"><img src="'+item.photo+'" alt=""></div>'
       +'<div class="pb-name">'+item.name+'</div>'
       +'<button class="pb-remove" onclick="removeFromProg('+item.uid+')">&#215;</button>'
@@ -3933,22 +3938,6 @@ function renderProgram(){
       +'<div><div class="pb-ctrl-lbl">Rest</div><input class="pb-ctrl-in" type="text" value="'+item.rest+'" placeholder="e.g. 60s" data-uid="'+item.uid+'" data-field="rest" onchange="updateProgField(this)"></div>'
       +'</div>'
       +'<div class="pb-instr">'+item.instr+'</div>';
-    d.addEventListener('dragstart',function(e){dragSrc=item.uid;setTimeout(function(){d.style.opacity='0.5';},0);});
-    d.addEventListener('dragend',function(){d.style.opacity='1';});
-    d.addEventListener('dragover',function(e){e.preventDefault();d.classList.add('drag-over');});
-    d.addEventListener('dragleave',function(){d.classList.remove('drag-over');});
-    d.addEventListener('drop',function(e){
-      e.preventDefault();d.classList.remove('drag-over');
-      var data=e.dataTransfer.getData('text/plain');
-      if(data&&data.startsWith('lib:')){
-        addToProg(parseInt(data.split(':')[1]));
-      } else if(dragSrc&&dragSrc!==item.uid){
-        var si=pbProgram.findIndex(function(i){return i.uid===dragSrc;});
-        var ti=pbProgram.findIndex(function(i){return i.uid===item.uid;});
-        if(si>=0&&ti>=0){var mv=pbProgram.splice(si,1)[0];pbProgram.splice(ti,0,mv);renderProgram();}
-      }
-      dragSrc=null;
-    });
     el.appendChild(d);
   });
   el.ondragover=function(e){e.preventDefault();};
@@ -3957,6 +3946,16 @@ function renderProgram(){
     var data=e.dataTransfer.getData('text/plain');
     if(data&&data.startsWith('lib:'))addToProg(parseInt(data.split(':')[1]));
   };
+}
+
+function moveProgItem(uid,dir){
+  var i=pbProgram.findIndex(function(it){return it.uid===uid;});
+  var j=i+dir;
+  if(i<0||j<0||j>=pbProgram.length)return;
+  var tmp=pbProgram[i];
+  pbProgram[i]=pbProgram[j];
+  pbProgram[j]=tmp;
+  renderProgram();
 }
 
 function updateProgField(el){
